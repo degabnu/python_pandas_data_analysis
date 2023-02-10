@@ -12,5 +12,3 @@
 # plt.title("Teste de Gráfico")
 # plt.show()
 # ################################################################
-# ################################################################
-# Qual a média de preços dos combustíveis GASOLINA e GASOLINA ADITIVADA do Bairro MOOCA em SÃO PAULO?

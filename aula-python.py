@@ -1,5 +1,6 @@
 # from IPython.display import display
 import pandas as pd
+import numpy as np
 # v_combustiveis_csv = pd.read_csv("precos-semestrais-ca-2022-01.csv", sep=';')
 v_combustiveis_excel = pd.read_excel("ca-2021-02.xlsx")
 
@@ -46,4 +47,39 @@ v_gas_df = v_ca_df.loc[v_ca_df['Produto'] == 'GASOLINA']
 # print(v_combustiveis_excel)
 # print(v_combustiveis_excel.head(10))
 
-v_ca_df.to_excel("ca-teste.xlsx", index=False)
+# v_ca_df.to_excel("ca-teste.xlsx", index=False)
+
+# Criar uma coluna "Obs" que tenha nela escrito "MELHOR CIDADE" quando a coluna Municipio for igual a SAO PAULO
+# v_combustiveis_excel['Obs'] = ["MELHOR CIDADE" if municipio ==
+#                                'SAO PAULO' else None for municipio in v_combustiveis_excel['Municipio']]
+# print(v_combustiveis_excel.loc[v_combustiveis_excel['Municipio'].isin(
+#     ['SAO PAULO', 'INDAIATUBA', 'CAMPINAS', 'SALTO']), ['Municipio', 'Obs']])
+
+# np.where()
+
+num_habitantes_df = pd.read_csv("ibge_num_habitantes_estimado.csv", sep=";")
+print(num_habitantes_df)
+
+num_habitantes_df.rename(columns={"Estado": "Estado - Sigla"}, inplace=True) 
+
+num_habitantes_df = pd.read_csv("ibge_num_habitantes_estimado.csv", sep=";")
+num_habitantes_df.rename(columns={"Estado": "Estado - Sigla"}, inplace=True)
+print(num_habitantes_df)
+
+
+#Agrupar e contar quantos postos tem na cidade..
+postos_por_municipio_df = merge_df.groupby(by=['Estado - Sigla', 'Municipio', 'NumHabitantes2021']).count()
+postos_por_municipio_df.drop('CNPJ da Revenda', axis=1, inplace=True)
+postos_por_municipio_df.rename(columns={"Revenda": "Número de Postos"}, inplace=True)
+print(postos_por_municipio_df)
+
+#AQUI O FINAL ESTÁ COM PROBLEMA
+
+#Agrupar e contar quantos postos tem na cidade..
+postos_por_municipio_df = merge_df.groupby(by=['Estado - Sigla', 'Municipio', 'NumHabitantes2021']).count()
+print(postos_por_municipio_df.info())
+postos_por_municipio_df.drop('CNPJ da Revenda', axis=1, inplace=True)
+postos_por_municipio_df.rename(columns={"Revenda": "NumPostos"}, inplace=True)
+
+#postos_por_municipio_df['PostosPorHabitante'] = postos_por_municipio_df['NumPostos'] / postos_por_municipio_df['NumHabitantes2021']
+print(postos_por_municipio_df)
