@@ -1,4 +1,8 @@
 # from IPython.display import display
+from openpyxl.styles import PatternFill, Font, Color, Alignment
+from openpyxl import load_workbook
+import seaborn as sns
+import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
 # v_combustiveis_csv = pd.read_csv("precos-semestrais-ca-2022-01.csv", sep=';')
@@ -57,29 +61,125 @@ v_gas_df = v_ca_df.loc[v_ca_df['Produto'] == 'GASOLINA']
 
 # np.where()
 
-num_habitantes_df = pd.read_csv("ibge_num_habitantes_estimado.csv", sep=";")
-print(num_habitantes_df)
+# num_habitantes_df = pd.read_csv("ibge_num_habitantes_estimado.csv", sep=";")
+# print(num_habitantes_df)
 
-num_habitantes_df.rename(columns={"Estado": "Estado - Sigla"}, inplace=True) 
+# num_habitantes_df.rename(columns={"Estado": "Estado - Sigla"}, inplace=True)
 
-num_habitantes_df = pd.read_csv("ibge_num_habitantes_estimado.csv", sep=";")
-num_habitantes_df.rename(columns={"Estado": "Estado - Sigla"}, inplace=True)
-print(num_habitantes_df)
+# num_habitantes_df = pd.read_csv("ibge_num_habitantes_estimado.csv", sep=";")
+# num_habitantes_df.rename(columns={"Estado": "Estado - Sigla"}, inplace=True)
+# print(num_habitantes_df)
 
 
-#Agrupar e contar quantos postos tem na cidade..
-postos_por_municipio_df = merge_df.groupby(by=['Estado - Sigla', 'Municipio', 'NumHabitantes2021']).count()
-postos_por_municipio_df.drop('CNPJ da Revenda', axis=1, inplace=True)
-postos_por_municipio_df.rename(columns={"Revenda": "Número de Postos"}, inplace=True)
-print(postos_por_municipio_df)
+# #Agrupar e contar quantos postos tem na cidade..
+# postos_por_municipio_df = merge_df.groupby(by=['Estado - Sigla', 'Municipio', 'NumHabitantes2021']).count()
+# postos_por_municipio_df.drop('CNPJ da Revenda', axis=1, inplace=True)
+# postos_por_municipio_df.rename(columns={"Revenda": "Número de Postos"}, inplace=True)
+# print(postos_por_municipio_df)
 
-#AQUI O FINAL ESTÁ COM PROBLEMA
+# #AQUI O FINAL ESTÁ COM PROBLEMA
 
-#Agrupar e contar quantos postos tem na cidade..
-postos_por_municipio_df = merge_df.groupby(by=['Estado - Sigla', 'Municipio', 'NumHabitantes2021']).count()
-print(postos_por_municipio_df.info())
-postos_por_municipio_df.drop('CNPJ da Revenda', axis=1, inplace=True)
-postos_por_municipio_df.rename(columns={"Revenda": "NumPostos"}, inplace=True)
+# #Agrupar e contar quantos postos tem na cidade..
+# postos_por_municipio_df = merge_df.groupby(by=['Estado - Sigla', 'Municipio', 'NumHabitantes2021']).count()
+# print(postos_por_municipio_df.info())
+# postos_por_municipio_df.drop('CNPJ da Revenda', axis=1, inplace=True)
+# postos_por_municipio_df.rename(columns={"Revenda": "NumPostos"}, inplace=True)
 
-#postos_por_municipio_df['PostosPorHabitante'] = postos_por_municipio_df['NumPostos'] / postos_por_municipio_df['NumHabitantes2021']
-print(postos_por_municipio_df)
+# #postos_por_municipio_df['PostosPorHabitante'] = postos_por_municipio_df['NumPostos'] / postos_por_municipio_df['NumHabitantes2021']
+# print(postos_por_municipio_df)
+
+# postos_por_municipio_df = merge_df.groupby(
+#     by=['Estado - Sigla', 'Municipio', 'NumHabitantes2021']).count()
+# postos_por_municipio_df.reset_index(inplace=True)
+# # display(postos_por_municipio_df.info())
+# postos_por_municipio_df.drop('CNPJ da Revenda', axis=1, inplace=True)
+# postos_por_municipio_df.rename(columns={"Revenda": "NumPostos"}, inplace=True)
+
+# postos_por_municipio_df['NumHabitantesPorPosto'] = postos_por_municipio_df['NumHabitantes2021'] / \
+#     postos_por_municipio_df['NumPostos']
+# # display(postos_por_municipio_df.info())
+# print(postos_por_municipio_df)
+
+
+# Vamos brincar de gráficos!!!
+
+# plt.hist(v_combustiveis_excel['Valor de Venda'])
+
+# plt.title("Preço dos combustíveis - Nov/2021")
+
+# plt.xlabel("Preço (em reais)")
+# plt.ylabel("Quantidade de Coletas")
+
+# plt.figure(figsize=(7, 5))
+
+c_mean = v_combustiveis_excel['Valor de Venda'].groupby(
+    by=v_combustiveis_excel['Produto']).mean()
+# print(c_mean)
+
+# # Plotar o gráfico
+# c_mean.plot(
+#     kind="barh",
+#     xlabel="Tipo de Combustível",
+#     ylabel="Preço reais/litro",
+#     color="red"
+# )
+
+# # Grid
+# plt.grid()
+
+# # Exibe
+# plt.show()
+# # Traça a linha vermelha tracejada com o preço médio
+# plt.axvline(v_combustiveis_excel['Valor de Venda'].mean(),
+#             color='red', linestyle='dashed', linewidth=5)
+
+# plt.show()
+
+
+# # Vou definir a área do gráfico
+# plt.figure(figsize=(7, 5))
+
+# # Plotar o gráfico
+# c_mean.plot(
+#     kind="barh",
+#     xlabel="Tipo de Combustível",
+#     ylabel="Preço reais/litro",
+#     title="Média de preços por combustível",
+#     color="red",
+#     alpha=0.3
+# )
+
+
+# plt.grid()
+
+# sns.despine()
+
+# plt.show()
+
+excel = "por_litro.xlsx"
+c_mean.to_excel(excel, "Sumário")
+
+
+wb = load_workbook(excel)
+
+ws = wb['Sumário']
+
+cinza = PatternFill("solid", fgColor="CCCCCC")
+ws['A1'].fill = cinza
+ws['B1'].fill = cinza
+coords = ['A1', 'B1']
+for coord in coords:
+    ws[coord].fill = cinza
+
+
+# Onde o preço do combustível for maior ou igual a 6,5 reais (6.5) pinta a fonte
+# de vermelho e deixa negrito...
+MAX_ROW = ws.max_row
+num_linha = 2
+while (num_linha <= MAX_ROW):
+    coord = 'B'+str(num_linha)  # coord="B{0}".format(num_linha)
+    if ws[coord].value >= 6.5:
+        ws[coord].font = Font(bold=True, color="FF0000")
+    num_linha = num_linha + 1
+# Salvar o Excel
+wb.save(excel)
